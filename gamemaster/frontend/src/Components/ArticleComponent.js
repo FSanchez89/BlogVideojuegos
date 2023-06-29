@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { BsTrash, BsPencil } from 'react-icons/bs';
-import { format } from 'date-fns';
 
-export const ArticleComponent = () => {
-    // Artículo simulado
-    const article = {
-        id: 1,
-        title: 'Título del artículo',
-        image: 'https://picsum.photos/400/200', // Imagen simulada de Picsum
-        content: 'Contenido del artículo',
-        date: new Date(),
-    };
-
+export const ArticleComponent = ({ id }) => {
+    const [article, setArticle] = useState([]);
     const [editing, setEditing] = useState(false);
-    const [editedTitle, setEditedTitle] = useState(article.title);
-    const [editedContent, setEditedContent] = useState(article.content);
+    const [editedTitle, setEditedTitle] = useState('');
+    const [editedContent, setEditedContent] = useState('');
+
+    useEffect(() => {
+        // Obtener el artículo desde el servidor
+        axios
+            .get(`http://localhost:4000/article/${id}`)
+            .then((response) => {
+                setArticle(response.data);
+                setEditedTitle(response.data.titulo);
+                setEditedContent(response.data.contenido);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, [id]);
 
     const handleDelete = () => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este artículo? Esta acción es irreversible.')) {
@@ -29,30 +35,41 @@ export const ArticleComponent = () => {
 
     const handleSave = () => {
         // Aquí puedes implementar la lógica para guardar los cambios realizados en el artículo
-        console.log('Cambios guardados');
+        // Por ejemplo, podrías enviar una solicitud al servidor para guardar los cambios en la base de datos
+
+        // Actualizar el estado del artículo con los nuevos valores editados
+        setArticle((prevState) => ({
+            ...prevState,
+            title: editedTitle,
+            content: editedContent
+        }));
+
         setEditing(false);
     };
 
     const handleCancel = () => {
         setEditing(false);
-        setEditedTitle(article.title);
-        setEditedContent(article.content);
+        setEditedTitle(article.titulo);
+        setEditedContent(article.contenido);
     };
+
+    if (!article) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="container">
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     <div className="text-center">
-                        <h2>{editing ? <input value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} /> : article.title}</h2>
-                        <img
-                            src={article.image}
-                            alt={article.title}
-                            style={{ width: '100%', maxWidth: '400px', height: 'auto' }}
-                        />
-                        <p>{editing ? <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} /> : article.content}</p>
-                        <p style={{ textAlign: 'right', marginTop: '10px', fontStyle: 'italic' }}>
-                            Publicado el: {format(article.date, 'dd/MM/yyyy HH:mm')}
+                        <h2>{editing ? <input value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} /> : article.titulo}</h2>
+                        <img src={article.imagen} alt={article.titulo} style={{ width: '100%', maxWidth: '400px', height: 'auto' }} />
+                        <p>
+                            {editing ? (
+                                <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} />
+                            ) : (
+                                article.contenido
+                            )}
                         </p>
                         <div className="d-flex justify-content-end">
                             {editing ? (

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsTrash } from 'react-icons/bs';
-import { es } from 'date-fns/locale';
 import axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
+import { ArticleComponent } from './ArticleComponent';
 
 export const HomeComponent = () => {
   const [entries, setEntries] = useState([]);
@@ -75,7 +75,7 @@ export const HomeComponent = () => {
                         </button>
                       </div>
                       <p className="text-muted">
-                      <ReactTimeAgo date={new Date(entry.fechapublicacion)} />
+                        <ReactTimeAgo date={new Date(entry.fechapublicacion)} />
                       </p>
                     </div>
                   </article>

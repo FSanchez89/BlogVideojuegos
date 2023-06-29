@@ -124,6 +124,29 @@ app.get('/articles', (req, res) => {
   });
 });
 
+// Ruta para obtener los detalles de un artículo por su ID
+app.get('/article/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Consultar la base de datos para obtener los detalles del artículo con el ID especificado
+  const query = `SELECT * FROM publicaciones WHERE id = ?`;
+  const values = [id];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error al obtener los detalles del artículo' });
+    } else {
+      if (result.length > 0) {
+        const article = result[0];
+        res.status(200).json(article);
+      } else {
+        res.status(404).json({ error: 'Artículo no encontrado' });
+      }
+    }
+  });
+});
+
 // Ruta para borrar una publicación por su ID
 app.delete('/article/:id', (req, res) => {
   const postId = req.params.id;
