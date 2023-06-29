@@ -1,15 +1,162 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mysql = require("mysql2");
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
+require("dotenv").config();
 
+const port = process.env.PORT || 4000;
 const app = express();
-const port = 3000;
 
+// Permitir CORS
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+// Configuración de la conexión a la base de datos
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+db.connect((err) => {
+  if (err) throw err;
+  console.log("Conexión establecida con la base de datos");
+});
+
+app.use('/public', express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send('¡Hola desde el servidor!');
+// Configuración de multer para procesar los archivos adjuntos
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+app.post('/add', upload.single("image"), (req, res) => {
+  const { title, content } = req.body;
+  const image = req.file;
+
+  // Verificar si se ha adjuntado un archivo
+  if (!image) {
+    res.status(400).json({ error: 'No se ha adjuntado ninguna imagen' });
+    return;
+  }
+
+  // Generar una ruta única para la imagen
+  const imageFileName = generateUniqueFileName(image.originalname);
+
+  // Guardar la imagen en la carpeta "public" y obtener la ruta de la imagen
+  const imageFilePath = saveImage(image.buffer, imageFileName);
+
+  // Obtener la fecha y hora actual
+  const currentDate = new Date();
+
+  // Insertar la nueva publicación en la base de datos con la fecha actual
+  const query = `INSERT INTO publicaciones (titulo, contenido, imagen, fechapublicacion) VALUES (?, ?, ?, ?)`;
+  const values = [title, content, imageFilePath, currentDate];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error al agregar la publicación' });
+    } else {
+      // Enviar una respuesta de éxito con un mensaje
+      res.status(200).json({ message: 'Publicación y imagen subidas exitosamente' });
+    }
+  });
 });
+
+// Función para generar un nombre de archivo único
+const generateUniqueFileName = (originalFileName) => {
+  const timestamp = Date.now();
+  const randomString = Math.random().toString(36).substring(2, 8);
+  const fileExtension = originalFileName.split('.').pop();
+  return `${timestamp}_${randomString}.${fileExtension}`;
+};
+
+// Función para guardar la imagen en la carpeta "public" y devolver la ruta de la imagen
+const saveImage = (imageData, fileName) => {
+  const imagePath = path.join(__dirname, 'public', fileName);
+
+  // Guardar la imagen en la carpeta "public"
+  fs.writeFile(imagePath, imageData, 'base64', (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Imagen guardada: ${fileName}`);
+    }
+  });
+
+  // Devolver la ruta de la imagen
+  return `/public/${fileName}`;
+};
+
+// Función para borrar la imagen del servidor
+const deleteImage = (fileName) => {
+  const imagePath = path.join(__dirname, fileName);
+
+  fs.unlink(imagePath, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Imagen borrada: ${fileName}`);
+    }
+  });
+};
+
+// Ruta para obtener todas las publicaciones
+app.get('/articles', (req, res) => {
+  const query = `SELECT * FROM publicaciones`;
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error al obtener las publicaciones' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+// Ruta para borrar una publicación por su ID
+app.delete('/article/:id', (req, res) => {
+  const postId = req.params.id;
+
+  // Obtener la imagen de la publicación antes de borrarla
+  const query = `SELECT imagen FROM publicaciones WHERE id = ?`;
+  const values = [postId];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error al obtener la imagen de la publicación' });
+    } else {
+      const imageFileName = result[0].imagen;
+
+      // Borrar la imagen del servidor
+      deleteImage(imageFileName);
+
+      // Borrar la publicación de la base de datos
+      const deleteQuery = `DELETE FROM publicaciones WHERE id = ?`;
+
+      db.query(deleteQuery, [postId], (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Error al borrar la publicación' });
+        } else {
+          res.status(200).json({ message: 'Publicación borrada exitosamente' });
+        }
+      });
+    }
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
