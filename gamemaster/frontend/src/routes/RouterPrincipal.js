@@ -7,6 +7,7 @@ import { HeaderComponent } from '../Components/HeaderComponent';
 import { AboutUsComponent } from '../Components/AboutUsComponent';
 import { AddArticleComponent } from '../Components/AddArticleComponent';
 import { ArticleComponent } from '../Components/ArticleComponent';
+import { CambioExitoso } from '../Components/CambioExitoso';
 
 const RouterPrincipal = () => {
   return (
@@ -19,6 +20,7 @@ const RouterPrincipal = () => {
         <Route path="/add" element={<AddArticleComponent />} />
         <Route path="/about" element={<AboutUsComponent />} />
         <Route path="/article/:id" element={<ArticleComponent />} />
+        <Route path="/cambio-exitoso/:id" element={<CambioExitoso />} />
       </Routes>
 
       <FooterComponent />

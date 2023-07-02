@@ -181,6 +181,85 @@ app.delete('/article/:id', (req, res) => {
 });
 
 
+
+
+
+
+
+
+app.post('/article/:id', upload.single('imagen'), (req, res) => {
+  const id = req.params.id;
+  const { titulo, contenido } = req.body;
+
+  // Verificar si se ha adjuntado una nueva imagen
+  if (req.file) {
+    const imagen = req.file;
+
+    // Generar un nombre de archivo único para la nueva imagen
+    const nuevaImagenNombre = generateUniqueFileName(imagen.originalname);
+
+    // Eliminar la imagen anterior si existe
+    const obtenerArticuloQuery = 'SELECT imagen FROM publicaciones WHERE id = ?';
+
+    db.query(obtenerArticuloQuery, [id], (error, results) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send('Error al buscar el artículo');
+      }
+
+      const article = results[0];
+
+      if (article.imagen) {
+        const imagePath = path.join(__dirname, article.imagen);
+        fs.unlink(imagePath, (error) => {
+          if (error) {
+            console.error(error);
+          }
+        });
+      }
+
+      // Guardar la nueva imagen en la carpeta "public" y obtener la ruta de la imagen
+      const nuevaImagenRuta = saveImage(imagen.buffer, nuevaImagenNombre);
+
+      // Actualizar la ruta de la imagen, el título y el contenido en el artículo
+      const actualizarArticuloQuery = 'UPDATE publicaciones SET imagen = ?, titulo = ?, contenido = ? WHERE id = ?';
+
+      db.query(actualizarArticuloQuery, [nuevaImagenRuta, titulo, contenido, id], (error) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send('Error al guardar el artículo');
+        }
+
+        res.json({ success: true });
+      });
+    });
+  } else {
+    // No se ha adjuntado una nueva imagen, solo actualizar el título y el contenido
+    const actualizarArticuloQuery = 'UPDATE publicaciones SET titulo = ?, contenido = ? WHERE id = ?';
+
+    db.query(actualizarArticuloQuery, [titulo, contenido, id], (error) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send('Error al guardar el artículo');
+      }
+
+      res.json({ success: true });
+    });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
 });
