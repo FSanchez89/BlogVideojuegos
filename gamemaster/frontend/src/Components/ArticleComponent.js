@@ -148,20 +148,29 @@ export const ArticleComponent = () => {
             )}
             {editing ? (
               <div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-                {editedImage && (
-                  <div>
+                <div>
+                  {editedImage ? (
+                    <div>
+                      <img
+                        src={
+                          editedImage instanceof File
+                            ? URL.createObjectURL(editedImage)
+                            : editedImage
+                        }
+                        alt="Preview"
+                        style={{
+                          width: '100%',
+                          maxWidth: '800px',
+                          height: 'auto',
+                          marginTop: '10px',
+                          marginBottom: '10px',
+                        }}
+                      />
+                      <button onClick={handleRemoveImage}>Remove Image</button>
+                    </div>
+                  ) : (
                     <img
-                      src={
-                        editedImage instanceof File
-                          ? URL.createObjectURL(editedImage)
-                          : editedImage
-                      }
-                      alt="Preview"
+                      src={'http://localhost:4000' + article.imagen}
                       style={{
                         width: '100%',
                         maxWidth: '800px',
@@ -169,10 +178,15 @@ export const ArticleComponent = () => {
                         marginTop: '10px',
                         marginBottom: '10px',
                       }}
+                      alt="Article Image"
                     />
-                    <button onClick={handleRemoveImage}>Remove Image</button>
-                  </div>
-                )}
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
               </div>
             ) : (
               <img
@@ -213,23 +227,17 @@ export const ArticleComponent = () => {
               </div>
             ) : (
               <div className="d-flex justify-content-end align-items-center mt-3 mb-3">
-                <button
-                  className="btn btn-danger mr-2 ml-2"
-                  onClick={handleDelete}
-                >
-                  <BsTrash />
+                <button className="btn btn-primary mr-2" onClick={handleEdit}>
+                  Editar
                 </button>
-                <button
-                  className="btn btn-primary mr-2 ml-2"
-                  onClick={handleEdit}
-                >
-                  <BsPencil />
+                <button className="btn btn-danger" onClick={handleDelete}>
+                  Eliminar
                 </button>
               </div>
             )}
             {savedSuccessfully && (
-              <div className="text-success">
-                Cambios guardados exitosamente
+              <div className="alert alert-success" role="alert">
+                ¡Cambios guardados exitosamente!
               </div>
             )}
           </div>
