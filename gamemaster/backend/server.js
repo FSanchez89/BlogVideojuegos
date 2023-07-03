@@ -34,9 +34,13 @@ app.use('/public', express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
+
 // Configuración de multer para procesar los archivos adjuntos
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+//////////////////////////////////////////////////////Agregar un Articulo y subida de imagenes///////////////////////////////////////////////////////////////////////////
 
 app.post('/add', upload.single("image"), (req, res) => {
   const { title, content } = req.body;
@@ -110,6 +114,7 @@ const deleteImage = (fileName) => {
   });
 };
 
+/////////////////////////////////////////////////////////////////Mostrar los Articulos en la pagina principal///////////////////////////////////////////////////
 // Ruta para obtener todas las publicaciones
 app.get('/articles', (req, res) => {
   const query = `SELECT * FROM publicaciones`;
@@ -124,6 +129,7 @@ app.get('/articles', (req, res) => {
   });
 });
 
+////////////////////////////////////////////////////Mostrar Articulo Completo al hacer click en el articulo en la pagina principal////////////////////////////////
 // Ruta para obtener los detalles de un artículo por su ID
 app.get('/article/:id', (req, res) => {
   const { id } = req.params;
@@ -147,6 +153,7 @@ app.get('/article/:id', (req, res) => {
   });
 });
 
+///////////////////////////////////////////////////Borrar Articulo por su ID//////////////////////////////////////////////////////////////////////////////////////////
 // Ruta para borrar una publicación por su ID
 app.delete('/article/:id', (req, res) => {
   const postId = req.params.id;
@@ -180,13 +187,7 @@ app.delete('/article/:id', (req, res) => {
   });
 });
 
-
-
-
-
-
-
-
+///////////////////////////////////////////////////////////////Editar un Articulo Con o sin imagen/////////////////////////////////////////////////////////////////
 app.post('/article/:id', upload.single('imagen'), (req, res) => {
   const id = req.params.id;
   const { titulo, contenido } = req.body;
@@ -248,18 +249,7 @@ app.post('/article/:id', upload.single('imagen'), (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
+//////////////////////////////////////////////////Conexion al puerto//////////////////////////////////////////////////////////////////////
 app.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
 });
