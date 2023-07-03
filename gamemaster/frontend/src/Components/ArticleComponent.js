@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BsTrash, BsPencil } from 'react-icons/bs';
+import { BsTrash, BsPencil, BsSave, BsX } from 'react-icons/bs';
 import { useParams, useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 export const ArticleComponent = () => {
   const { id } = useParams();
@@ -12,6 +14,8 @@ export const ArticleComponent = () => {
   const [editedTitle, setEditedTitle] = useState('');
   const [editedContent, setEditedContent] = useState('');
   const [editedImage, setEditedImage] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [savedSuccessfully, setSavedSuccessfully] = useState(false);
 
   useEffect(() => {
@@ -57,7 +61,7 @@ export const ArticleComponent = () => {
     ) {
       try {
         await axios.delete(`http://localhost:4000/article/${id}`);
-        window.alert('Artículo borrado exitosamente');
+        setShowDeleteModal(false); // Ocultar modal de confirmación de eliminación
         navigate('/'); // Redirige a la página principal
       } catch (error) {
         console.error(error);
@@ -71,7 +75,7 @@ export const ArticleComponent = () => {
 
   const handleSave = async () => {
     if (editedTitle.trim() === '' || editedContent.trim() === '') {
-      alert('El título y el contenido son obligatorios');
+      setShowErrorModal(true); // Mostrar modal de error
       return;
     }
 
@@ -133,6 +137,14 @@ export const ArticleComponent = () => {
 
   const formattedPublicationDate = formatDate(article.fechapublicacion);
 
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -142,9 +154,10 @@ export const ArticleComponent = () => {
               <input
                 value={editedTitle}
                 onChange={(e) => setEditedTitle(e.target.value)}
+                style={{ marginTop: '20px', width: '100%', fontSize: '24px' }}
               />
             ) : (
-              <h2>{editedTitle}</h2>
+              <h2 style={{ marginTop: '20px' }}>{editedTitle}</h2>
             )}
             {editing ? (
               <div>
@@ -158,6 +171,7 @@ export const ArticleComponent = () => {
                             : editedImage
                         }
                         alt="Preview"
+                        className="img-fluid"
                         style={{
                           width: '100%',
                           maxWidth: '800px',
@@ -166,11 +180,14 @@ export const ArticleComponent = () => {
                           marginBottom: '10px',
                         }}
                       />
-                      <button onClick={handleRemoveImage}>Remove Image</button>
+                      <button onClick={handleRemoveImage} className="btn btn-link">
+                        <BsX />
+                      </button>
                     </div>
                   ) : (
                     <img
                       src={'http://localhost:4000' + article.imagen}
+                      className="img-fluid"
                       style={{
                         width: '100%',
                         maxWidth: '800px',
@@ -191,6 +208,7 @@ export const ArticleComponent = () => {
             ) : (
               <img
                 src={'http://localhost:4000' + article.imagen}
+                className="img-fluid"
                 style={{
                   width: '100%',
                   maxWidth: '800px',
@@ -206,6 +224,8 @@ export const ArticleComponent = () => {
                 <textarea
                   value={editedContent}
                   onChange={(e) => setEditedContent(e.target.value)}
+                  style={{ height: '300px', marginTop: '10px', width: '100%' }}
+                  className="form-control"
                 />
               ) : (
                 <div>{paragraphs}</div>
@@ -218,31 +238,64 @@ export const ArticleComponent = () => {
             </div>
             {editing ? (
               <div className="d-flex justify-content-end align-items-center mt-3 mb-3">
-                <button className="btn btn-primary mr-2" onClick={handleSave}>
-                  Guardar
+                <button className="btn btn-primary mr-2" onClick={handleSave} style={{ marginRight: '5px' }}>
+                  <BsSave />
                 </button>
-                <button className="btn btn-secondary" onClick={handleCancel}>
-                  Cancelar
+                <button className="btn btn-danger" onClick={handleCancel}>
+                  <BsX />
                 </button>
               </div>
             ) : (
               <div className="d-flex justify-content-end align-items-center mt-3 mb-3">
-                <button className="btn btn-primary mr-2" onClick={handleEdit}>
-                  Editar
+                <button className="btn btn-primary mr-2" onClick={handleEdit} style={{ marginRight: '5px' }}>
+                  <BsPencil />
                 </button>
-                <button className="btn btn-danger" onClick={handleDelete}>
-                  Eliminar
+                <button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
+                  <BsTrash />
                 </button>
-              </div>
-            )}
-            {savedSuccessfully && (
-              <div className="alert alert-success" role="alert">
-                ¡Cambios guardados exitosamente!
               </div>
             )}
           </div>
+          {savedSuccessfully && (
+            <div className="alert alert-success">
+              Cambios guardados exitosamente.
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Modal para confirmación de eliminación */}
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Estás seguro de que deseas eliminar este artículo? Esta acción es irreversible.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal para alerta de campos obligatorios */}
+      <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          El título y el contenido son obligatorios.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseErrorModal}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
