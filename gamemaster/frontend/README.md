@@ -1,70 +1,63 @@
-# Getting Started with Create React App
+Memoria Explicativa del Proyecto
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Introducción
 
-## Available Scripts
+La presente memoria explica el proyecto de desarrollo de una aplicación web para la gestión de artículos. El objetivo principal de este proyecto es permitir a los usuarios crear, editar y eliminar artículos, así como visualizarlos en un formato amigable y atractivo.
+Objetivos
 
-In the project directory, you can run:
+Los objetivos del proyecto son los siguientes:
 
-### `npm start`
+    Desarrollar una aplicación web que permita a los usuarios crear y editar artículos a modo de blog.
+    Implementar funcionalidades de carga y eliminación de imágenes asociadas a los artículos.
+    Mejorar la experiencia de usuario mediante una interfaz intuitiva y agradable.
+    Utilizar tecnologías modernas y eficientes para el desarrollo de la aplicación.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Descripción del Proyecto
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+El proyecto consta de una aplicación web para la gestión de artículos. Los usuarios pueden acceder a la plataforma y crear en el blog nuevos artículos, editar los existentes y eliminar aquellos que ya no sean necesarios. Además, se les proporciona la opción de agregar imágenes a los artículos, lo que brinda una mayor riqueza visual.
 
-### `npm test`
+La solución se ha desarrollado utilizando React.js como framework principal para el frontend, aprovechando su flexibilidad y facilidad de uso. Para la comunicación con el backend, se utiliza axios, una librería de JavaScript que permite realizar peticiones HTTP de manera sencilla. Por otro lado, el backend se ha implementado utilizando Node.js y Express.js, proporcionando una arquitectura robusta y escalable.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+El proyecto se ha llevado a cabo siguiendo una metodología ágil, lo que ha permitido adaptar el desarrollo a medida que se iban identificando nuevas necesidades y requerimientos.
+Diseño e Implementación
 
-### `npm run build`
+El diseño y la implementación del proyecto se han realizado en varias etapas. En primer lugar, se realizó un análisis de requisitos para identificar las funcionalidades necesarias y los aspectos clave de la interfaz de usuario. A partir de esto, se procedió al diseño de la arquitectura del sistema y la base de datos.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+En cuanto a la implementación, se dividió en módulos para facilitar el desarrollo y la colaboración. Se utilizó HTML y CSS para diseñar la interfaz de usuario, siguiendo las mejores prácticas de diseño web responsivo usando bootstrap y accesibilidad. Para la lógica del frontend, se utilizó React.js, aprovechando su capacidad de gestión de estados y componentes reutilizables.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+En el backend, se implementaron endpoints RESTful utilizando Express.js para manejar las peticiones y respuestas. Se utilizó una base de datos MySQL para almacenar la información de los artículos, y se implementó una capa de acceso a datos para interactuar con la base de datos de manera eficiente.
+Tecnologías Utilizadas
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+En el desarrollo de este proyecto se utilizaron las siguientes tecnologías:
 
-### `npm run eject`
+    Frontend: React.js, HTML, CSS, Bootstrap, axios
+    Backend: Node.js, Express.js
+    Base de datos: MySQL
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Resultados y Conclusiones
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+El proyecto ha cumplido con éxito los objetivos planteados. Se ha desarrollado una aplicación web funcional que permite a los usuarios crear, editar y eliminar artículos de manera sencilla y eficiente. La interfaz de usuario ha sido diseñada de manera intuitiva, lo que facilita la interacción y mejora la experiencia de usuario.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Durante el proceso de desarrollo, se han superado diversos desafíos, como la gestión de la carga de imágenes y la implementación de la comunicación entre el frontend y el backend. Sin embargo, gracias a las tecnologías utilizadas y al trabajo en equipo, se lograron superar estos obstáculos y obtener resultados satisfactorios.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+En resumen, el proyecto ha sido exitoso en el desarrollo de una aplicación web para la gestión de artículos. Se han cumplido los objetivos establecidos y se ha logrado una aplicación funcional y atractiva. Se recomienda seguir realizando mejoras y actualizaciones para mantener la aplicación al día y adaptarse a las necesidades cambiantes de los usuarios.
+Futuras Mejoras
 
-## Learn More
+Algunas mejoras que se podrían implementar en el futuro son las siguientes:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    Añadir funcionalidades de búsqueda y filtrado para facilitar la exploración de artículos.
+    Optimizar el rendimiento de la aplicación mediante técnicas como el almacenamiento en caché y la compresión de imágenes.
+    Añadir una barra lateral (Sidebar) donde se pueda buscar los articulos por el año y el mes en que se escribio 
+    Mejorar la accesibilidad de la aplicación para garantizar su uso por parte de personas con discapacidades.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Agradecimientos
 
-### Code Splitting
+Quiero expresar mi agradecimiento a todas las personas que han contribuido al desarrollo de este proyecto, tanto de manera directa como indirecta. Agradezco especialmente a mis Docentes en Ensenada por la enriquiecedora experiencia de aprendizaje que Culmino en la realizacion de este proyecto.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+También quiero agradecer a la comunidad de desarrolladores y a las organizaciones que han creado y mantenido las tecnologías utilizadas en este proyecto, ya que sin su trabajo y dedicación no hubiera sido posible llevarlo a cabo.
 
-### Analyzing the Bundle Size
+Conclusión
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+En conclusión, el proyecto de desarrollo de una aplicación web para la gestión de artículos a modo de blog ha sido una experiencia enriquecedora y gratificante. Se han cumplido los objetivos planteados y se ha logrado una aplicación funcional y atractiva. Espero que esta aplicación sea útil y beneficie a sus usuarios.
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Agradezco la oportunidad de haber trabajado en este proyecto y estoy satisfecho con los resultados obtenidos. Espero que este proyecto sea el punto de partida para futuros desarrollos y mejoras.
